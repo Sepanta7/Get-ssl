@@ -1,7 +1,7 @@
 <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $domain = filter_var($_POST['domain'], FILTER_SANITIZE_STRING);
-    
+
     if (!empty($domain)) {
         header("Location: issue_ssl.php?domain=" . urlencode($domain));
         exit;
