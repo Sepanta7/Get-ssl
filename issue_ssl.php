@@ -4,8 +4,6 @@ if (isset($_GET['domain'])) {
 
     if (!empty($domain)) {
         $command = "sudo certbot --apache -d $domain --non-interactive --agree-tos -m your-email@example.com";
-        // برای سرور Nginx از دستور زیر استفاده کنید:
-        // $command = "sudo certbot --nginx -d $domain --non-interactive --agree-tos -m your-email@example.com";
         
         $output = shell_exec($command);
         
