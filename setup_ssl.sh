@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# شناسایی توزیع لینوکس
+if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    OS_NAME=$NAME
+    OS_VERSION=$VERSION_ID
+else
+    echo "Unsupported OS. Exiting."
+    exit 1
+fi
+
 read -p "Enter your domain or subdomain (e.g., example.com): " domain
 
 if [[ -z "$domain" ]]; then
@@ -7,14 +17,39 @@ if [[ -z "$domain" ]]; then
     exit 1
 fi
 
-# Install Certbot if not already installed
+install_certbot() {
+    case $OS_NAME in
+        "Ubuntu"*)
+            sudo apt update
+            sudo apt install certbot python3-certbot-apache -y
+            ;;
+        "Debian"*)
+            sudo apt update
+            sudo apt install certbot python3-certbot-apache -y
+            ;;
+        "Fedora"*)
+            sudo dnf install certbot python3-certbot-apache -y
+            ;;
+        "Rocky Linux"*)
+            sudo dnf install certbot python3-certbot-apache -y
+            ;;
+        "Oracle Linux"*)
+            sudo dnf install certbot python3-certbot-apache -y
+            ;;
+        *)
+            echo "Unsupported OS. Exiting."
+            exit 1
+            ;;
+    esac
+}
+
+# نصب Certbot در صورت نیاز
 if ! command -v certbot &> /dev/null; then
     echo "Certbot not found. Installing..."
-    sudo apt update
-    sudo apt install certbot python3-certbot-apache -y
+    install_certbot
 fi
 
-# Issue SSL certificate
+# صدور گواهی SSL
 sudo certbot --apache -d "$domain" --non-interactive --agree-tos -m your-email@example.com
 
 if [[ $? -eq 0 ]]; then
