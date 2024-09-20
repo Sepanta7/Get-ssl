@@ -1,13 +1,28 @@
 #!/bin/bash
 
-mkdir -p /var/www/html/Get-ssl
+read -p "Enter your domain or subdomain (e.g., example.com): " domain
 
-curl -o /var/www/html/Get-ssl/get_domain.php https://raw.githubusercontent.com/sepanta7/Get-ssl/main/get_domain.php
-curl -o /var/www/html/Get-ssl/issue_ssl.php https://raw.githubusercontent.com/sepanta7/Get-ssl/main/issue_ssl.php
+if [[ -z "$domain" ]]; then
+    echo "No domain provided. Exiting."
+    exit 1
+fi
 
-echo "Enter your domain or subdomain:"
-read domain
+# Install Certbot if not already installed
+if ! command -v certbot &> /dev/null; then
+    echo "Certbot not found. Installing..."
+    sudo apt update
+    sudo apt install certbot python3-certbot-apache -y
+fi
 
-echo "www-data ALL=(ALL) NOPASSWD: /usr/bin/certbot" | sudo tee -a /etc/sudoers
+# Issue SSL certificate
+sudo certbot --apache -d "$domain" --non-interactive --agree-tos -m your-email@example.com
 
-echo "SSL setup script completed. You can now access the form via http://your-server-ip/Get-ssl/get_domain.php"
+if [[ $? -eq 0 ]]; then
+    echo "SSL certificate successfully obtained and activated for $domain."
+else
+    echo "Failed to obtain or activate SSL certificate for $domain. Please check the logs for details."
+fi
+
+echo "SSL setup script completed."
+echo "Telegram: @sepanta_n"
+echo "GitHub: https://sepanta7"
