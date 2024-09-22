@@ -1,4 +1,5 @@
-Get ssl certificate 
+English/فارسی
+Get ssl certificate🚀 
 
 run 
 https://raw.githubusercontent.com/sepanta7/Get-ssl/main/setup_ssl.sh)
